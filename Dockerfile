@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.8-alpine as builder
-WORKDIR /go/src/github.com/GoogleCloudPlatform/container-engine-accelerators
-COPY . .
-RUN go build cmd/nvidia_gpu/nvidia_gpu.go
-RUN chmod a+x /go/src/github.com/GoogleCloudPlatform/container-engine-accelerators/nvidia_gpu
+FROM ubuntu:16.04
 
-FROM alpine
-COPY --from=builder /go/src/github.com/GoogleCloudPlatform/container-engine-accelerators/nvidia_gpu /usr/bin/device_plugins
-CMD ["/usr/bin/device_plugins"]
+# Disable prompts from apt
+ENV DEBIAN_FRONTEND noninteractive
+
+COPY nvidia_gpu /usr/bin/device_plugins
+RUN chmod a+x /usr/bin/device_plugins
+#CMD ["/usr/bin/device_plugins"]

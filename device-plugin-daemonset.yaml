@@ -50,7 +50,8 @@ spec:
         hostPath:
           path: /proc/sysrq-trigger
       initContainers:
-      - image: "gcr.io/google-containers/cos-nvidia-driver-install@sha256:456f272257d4557518afcaa7b0a1bba22d6861b20061ed5a1bd3f38aa7f8fb1a"
+      #- image: "gcr.io/google-containers/cos-nvidia-driver-install@sha256:456f272257d4557518afcaa7b0a1bba22d6861b20061ed5a1bd3f38aa7f8fb1a"
+      - image: "gcr.io/jiayingz-gke-dev/cos-nvidia-driver-install:v0.4"
         command: ["/bin/sh", "-c"]
         args: ["usr/bin/nvidia-installer.sh"]
         name: nvidia-driver-installer
@@ -74,8 +75,11 @@ spec:
         - name: sysrq
           mountPath: /sysrq
       containers:
-      - image: "gcr.io/google-containers/device-plugin-gpu@sha256:dbd0fc7087f6831200840bbd5b39699981a9b4ce98ffb3eea8174f20f1d6ab2b"
+      - image: "gcr.io/jiayingz-gke-dev/device-plugin-gpu:v0.3"
+        imagePullPolicy: Always
         command: ["/usr/bin/device_plugins"]
+        #command: ["/bin/sh", "-c"]
+        #args: ["sleep infinity"]
         name: nvidia-device-plugin
         resources:
           requests:

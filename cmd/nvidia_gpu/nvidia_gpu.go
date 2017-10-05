@@ -226,6 +226,7 @@ func (ngm *nvidiaGPUManager) Serve(dpMountPath, kEndpoint, pEndpointPrefix strin
 			ngm.grpcServer = grpcServer
 			ngm.Unlock()
 			ngm.grpcServer.Serve(lis)
+			fmt.Printf("Server exited.\n")
 		}()
 
 		// Wait till the grpcServer is ready to serve services.
@@ -252,11 +253,13 @@ func (ngm *nvidiaGPUManager) Serve(dpMountPath, kEndpoint, pEndpointPrefix strin
 
 		for {
 			if _, err := os.Lstat(pluginEndpointPath); err != nil {
+				fmt.Printf("socket file %v removed. Stopping service.\n", pluginEndpointPath)
 				ngm.grpcServer.Stop()
 				break
 			}
 			time.Sleep(1 * time.Second)
 		}
+		fmt.Printf("Waiting for server exit.\n")
 		wg.Wait()
 	}
 }
